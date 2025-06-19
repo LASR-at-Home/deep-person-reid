@@ -1,4 +1,3 @@
-import numpy as np
 import os.path as osp
 from setuptools import setup, find_packages
 from distutils.extension import Extension
@@ -18,28 +17,28 @@ def find_version():
     return locals()['__version__']
 
 
-def numpy_include():
-    try:
-        numpy_include = np.get_include()
-    except AttributeError:
-        numpy_include = np.get_numpy_include()
-    return numpy_include
-
-
-ext_modules = [
-    Extension(
-        'torchreid.metrics.rank_cylib.rank_cy',
-        ['torchreid/metrics/rank_cylib/rank_cy.pyx'],
-        include_dirs=[numpy_include()],
-    )
-]
-
-
 def get_requirements(filename='requirements.txt'):
     here = osp.dirname(osp.realpath(__file__))
     with open(osp.join(here, filename), 'r') as f:
         requires = [line.replace('\n', '') for line in f.readlines()]
     return requires
+
+
+def build_extensions():
+    import numpy as np  # ⬅️ moved import inside
+    try:
+        numpy_include = np.get_include()
+    except AttributeError:
+        numpy_include = np.get_numpy_include()
+
+    ext_modules = [
+        Extension(
+            'torchreid.metrics.rank_cylib.rank_cy',
+            ['torchreid/metrics/rank_cylib/rank_cy.pyx'],
+            include_dirs=[numpy_include],
+        )
+    ]
+    return cythonize(ext_modules)
 
 
 setup(
@@ -53,5 +52,5 @@ setup(
     packages=find_packages(),
     install_requires=get_requirements(),
     keywords=['Person Re-Identification', 'Deep Learning', 'Computer Vision'],
-    ext_modules=cythonize(ext_modules)
+    ext_modules=build_extensions(),
 )

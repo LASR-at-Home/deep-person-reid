@@ -49,7 +49,6 @@ def build_extensions():
 
 setup(
     name='torchreid',
-    version=find_version(),
     description='A library for deep learning person re-ID in PyTorch',
     author='Kaiyang Zhou',
     license='MIT',
@@ -59,4 +58,5 @@ setup(
     install_requires=get_requirements(),
     keywords=['Person Re-Identification', 'Deep Learning', 'Computer Vision'],
     ext_modules=build_extensions(),
+    version=find_version(),
 )

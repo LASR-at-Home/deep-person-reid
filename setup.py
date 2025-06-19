@@ -1,17 +1,9 @@
 import os.path as osp
 from setuptools import setup, find_packages
 
-
 def readme():
     with open('README.rst') as f:
         return f.read()
-
-
-def find_version():
-    version_file = 'torchreid/__init__.py'
-    with open(version_file, 'r') as f:
-        exec(compile(f.read(), version_file, 'exec'))
-    return locals()['__version__']
 
 
 def get_requirements(filename='requirements.txt'):
@@ -58,5 +50,5 @@ setup(
     install_requires=get_requirements(),
     keywords=['Person Re-Identification', 'Deep Learning', 'Computer Vision'],
     ext_modules=build_extensions(),
-    version=find_version(),
+    version='1.4.0',
 )

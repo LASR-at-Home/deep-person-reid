@@ -1,13 +1,10 @@
 import os.path as osp
 from setuptools import setup, find_packages
-from distutils.extension import Extension
-from Cython.Build import cythonize
 
 
 def readme():
     with open('README.rst') as f:
-        content = f.read()
-    return content
+        return f.read()
 
 
 def find_version():
@@ -20,12 +17,21 @@ def find_version():
 def get_requirements(filename='requirements.txt'):
     here = osp.dirname(osp.realpath(__file__))
     with open(osp.join(here, filename), 'r') as f:
-        requires = [line.replace('\n', '') for line in f.readlines()]
-    return requires
+        return [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
 
 def build_extensions():
-    import numpy as np  # ⬅️ moved import inside
+    try:
+        import numpy as np
+    except ImportError:
+        raise RuntimeError("numpy must be installed before building torchreid. Try: pip install numpy")
+
+    try:
+        from Cython.Build import cythonize
+        from distutils.extension import Extension
+    except ImportError:
+        raise RuntimeError("Cython must be installed before building torchreid. Try: pip install Cython")
+
     try:
         numpy_include = np.get_include()
     except AttributeError:
